@@ -7,6 +7,11 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 
+
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "appointments")
 public class Appointment {
@@ -43,5 +48,5 @@ public class Appointment {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    // Getters, setters, etc.
+
 }

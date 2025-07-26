@@ -1,8 +1,13 @@
 package com.healthflow.healthflowbackend.repository;
 
 import com.healthflow.healthflowbackend.model.Appointment;
+import com.healthflow.healthflowbackend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    // Custom query methods
+    List<Appointment> findByPatient_Id(Long patientId);
 }

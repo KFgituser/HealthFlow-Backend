@@ -8,6 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
@@ -15,7 +16,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long userId;
+    private Long id;
 
     @Column(name = "role")
     private String role;
@@ -40,4 +41,8 @@ public class User {
     private String specialty;
     private String homeAddress;
     private String workLocation;
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 }

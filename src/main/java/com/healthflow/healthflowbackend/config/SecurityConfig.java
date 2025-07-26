@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain; //the chain of filt
 //logged in
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -28,18 +29,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .cors(Customizer.withDefaults())
-                .cors(cors -> {})
-                .authorizeHttpRequests(auth -> auth
+                .cors(Customizer.withDefaults()) // Enable CORS
+                .csrf(csrf -> csrf.disable())   //  Disable CSRF for development
+                .authorizeHttpRequests(authz -> authz
                         .requestMatchers(
-                                "/api/users/auth/login",
-                                "/api/users/session-check",
-                                "/api/doctors/**",
+                                "/api/users/auth/**",
                                 "/api/users/register",
-                                "/auth/**"
+                                "/api/users/session-check"
                         ).permitAll()
-                        .requestMatchers("/doctors").hasRole("PATIENT") // or whatever roles you need
                         .anyRequest().authenticated()
                 );
 
@@ -58,6 +55,8 @@ public class SecurityConfig {
                         .allowedMethods("*")
                         .allowedHeaders("*")
                         .allowCredentials(true);
+
+
             }
         };
     };

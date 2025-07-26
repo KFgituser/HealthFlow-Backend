@@ -6,12 +6,19 @@ import com.healthflow.healthflowbackend.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
 import com.healthflow.healthflowbackend.DTO.LoginRequest; //log in
 import org.springframework.http.HttpStatus;
 import com.healthflow.healthflowbackend.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -108,8 +115,23 @@ public class UserController {
             }
         }
         @GetMapping("/session-check")
-        public ResponseEntity<?> checkSession(HttpSession session) {
+        public ResponseEntity<?> checkSession(HttpSession session, HttpServletRequest request) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            System.out.println("🔍 Session check — user: " + auth);
+
             Object user = session.getAttribute("user");
+            User loggedInUser = (User) user;
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(
+
+                            loggedInUser,
+                            null,
+                            List.of(new SimpleGrantedAuthority("ROLE_" + loggedInUser.getRole().toUpperCase()))
+                    );
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+            request.getSession().setAttribute(
+                    HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                    SecurityContextHolder.getContext());
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
             }
