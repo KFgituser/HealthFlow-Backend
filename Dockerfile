@@ -1,5 +1,5 @@
-# 第一阶段：使用 Maven 构建 jar 文件
-FROM maven:3.8.6-openjdk-17 AS build
+# 第一阶段：使用 Maven + JDK 17 构建 jar
+FROM maven:3.8.7-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
