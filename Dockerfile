@@ -1,14 +1,12 @@
-# 使用官方 Java 17 镜像
-FROM openjdk:17-jdk-slim
-
-# 设置工作目录
+# 第一阶段：使用 Maven 构建 jar 文件
+FROM maven:3.8.6-openjdk-17 AS build
 WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-# 复制构建后的 jar 文件到容器中
-COPY target/*.jar app.jar
-
-# 暴露端口（Render 要求使用 $PORT 环境变量）
+# 第二阶段：运行构建好的 jar
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 10000
-
-# 运行 jar 包
 CMD ["java", "-jar", "app.jar"]
