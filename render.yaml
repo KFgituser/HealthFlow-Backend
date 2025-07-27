@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: healthflow-backend
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: PORT
+        value: 10000echo $env:JAVA_HOME
