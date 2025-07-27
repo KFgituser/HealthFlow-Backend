@@ -84,7 +84,7 @@ public class UserController {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
             // Check password
-            if (!passwordEncoder.matches(password, user.getPasswordHash())) {
+            if (!passwordEncoder.matches(password, user.getPassword())) {
                 System.out.println("Password mismatch!");
                 return ResponseEntity.status(401).body("Invalid password");
             }
