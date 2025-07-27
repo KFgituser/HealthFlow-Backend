@@ -27,9 +27,10 @@ public class UserService {
         this.userRepository = userRepository;
         this.passwordEncoder = (BCryptPasswordEncoder) passwordEncoder;
     }
+    //register
     public User registerUser(User user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPasswordHash(encodedPassword);
+        user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
 
@@ -37,19 +38,21 @@ public class UserService {
         return userRepository.findAll();
     }
 
+
+
     public User authenticate(String login, String password) {
         Optional<User> optionalUser = userRepository.findByEmail(login);
-
         if (optionalUser.isEmpty()) {
             optionalUser = userRepository.findByPhone(login);
         }
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (user.getPassword().equals(password)) { // TODO: use hashed comparison
+            if (passwordEncoder.matches(password, user.getPassword())) {
                 return user;
             }
         }
+
 
         return null; // Invalid login
     }

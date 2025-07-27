@@ -33,7 +33,6 @@ public class User {
     private String phone;
 
     @Column(name = "password_hash")
-    private String passwordHash; //  PATIENT, DOCTOR, ADMIN
     private String password;
 
     private String dob;
@@ -45,5 +44,12 @@ public class User {
 
     public String getFullName() {
         return firstName + " " + lastName;
+    }
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
