@@ -84,7 +84,7 @@ public class AppointmentController {
                 .map(appointment -> new AppointmentResponse(
                         appointment.getAppointmentId(),
                         appointment.getDoctor().getFullName(),
-                        appointment.getDoctor().getSpecialty(),
+                        appointment.getDoctor().getId(),
                         appointment.getAppointmentDate().toLocalDate(),
                         appointment.getStartTime().toLocalTime(),
                         appointment.getEndTime().toLocalTime(),

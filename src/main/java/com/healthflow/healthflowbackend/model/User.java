@@ -38,6 +38,7 @@ public class User {
 
     private String dob;
     private String sex;
+    @Column(name = "specialty", nullable = true)
     private String specialty;
     private String homeAddress;
     private String workLocation;

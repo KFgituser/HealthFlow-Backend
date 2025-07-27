@@ -16,8 +16,7 @@ import java.time.LocalTime;
 public class AppointmentResponse {
     private Long appointmentId;
     private String doctorName;
-    private String specialty;
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Long doctorId;
     private LocalDate appointmentDate;
     private LocalTime startTime;
     private LocalTime endTime;

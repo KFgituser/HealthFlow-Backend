@@ -21,8 +21,8 @@ public class AppointmentService {
         this.appointmentRepository = appointmentRepository;
         this.userRepository = userRepository;
     }
-    public List<Appointment> getAppointmentsByPatientId(Long id) {
-        return appointmentRepository.findByPatient_Id(id);
+    public List<Appointment> getAppointmentsByPatientId(Long userId) {
+        return appointmentRepository.findByPatient_Id(userId);
 
     }
 
