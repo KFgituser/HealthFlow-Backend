@@ -68,6 +68,14 @@ public class UserController {
         }
     }
 
+        //原始 JDBC 调试方法
+
+
+    @GetMapping("/debug")
+    public ResponseEntity<String> debugUser() {
+        userService.debugRawQueryByEmail("eric.hao@example.com");
+        return ResponseEntity.ok("Debug complete. Check console output.");
+    }
 
         // for login
         @PostMapping("/login")
