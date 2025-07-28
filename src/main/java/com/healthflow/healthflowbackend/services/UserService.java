@@ -78,7 +78,7 @@ public class UserService {
                 System.out.println("✅ User found via JDBC:");
                 System.out.println("user_id: " + rs.getLong("user_id"));
                 System.out.println("email: " + rs.getString("email"));
-                System.out.println("password: " + rs.getString("password"));
+                System.out.println("password: " + rs.getString("password_hash"));
                 // 可根据需要添加其他字段输出
             } else {
                 System.out.println("❌ No user found with that email.");
