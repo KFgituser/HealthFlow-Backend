@@ -43,7 +43,7 @@ public class UserService {
     public User authenticate(String login, String password) {
         Optional<User> optionalUser = userRepository.findByEmail(login);
         if (optionalUser.isEmpty()) {
-            optionalUser = userRepository.findByPhone(login);
+            optionalUser = userRepository.findByEmail(login);
         }
 
         if (optionalUser.isPresent()) {

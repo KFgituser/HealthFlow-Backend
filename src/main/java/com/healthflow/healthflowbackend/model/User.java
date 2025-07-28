@@ -2,12 +2,10 @@ package com.healthflow.healthflowbackend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.Getter;
-import lombok.Setter;
+
 
 @Entity
-@Getter
-@Setter
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,6 +43,7 @@ public class User {
     public String getFullName() {
         return firstName + " " + lastName;
     }
+
     public String getPassword() {
         return password;
     }

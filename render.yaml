@@ -3,8 +3,11 @@ services:
     name: healthflow-backend
     env: docker
     plan: free
-    region: oregon
-    dockerfilePath: Dockerfile
+    region: frankfurt
     envVars:
-      - key: PORT
-        value: 10000echo $env:JAVA_HOME
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://mainline.proxy.rlwy.net:55062/railway
+      - key: SPRING_DATASOURCE_USERNAME
+        value: root
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: tMkhNQzLyUsEfkOmLkhgCvcsNkfCjDoe

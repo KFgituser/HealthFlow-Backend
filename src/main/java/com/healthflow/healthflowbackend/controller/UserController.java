@@ -7,19 +7,20 @@ import com.healthflow.healthflowbackend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
 import com.healthflow.healthflowbackend.DTO.LoginRequest; //log in
 import org.springframework.http.HttpStatus;
 import com.healthflow.healthflowbackend.repository.UserRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 
 import java.util.List;
-import java.util.Map;
+
 import java.util.Optional;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,14 +33,19 @@ import jakarta.servlet.http.HttpSession;
 
 public class UserController {
     //the logic for handling user-related requests.
-    private final UserService userService;
     @Autowired
     private UserRepository userRepository;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-
-    public UserController(UserService userService) {
+    @Autowired
+    public UserController(UserRepository userRepository,  UserService userService, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+
     }
+
 
     @GetMapping
     //This maps HTTP GET requests to /api/users to the method getAllUsers().
@@ -64,40 +70,34 @@ public class UserController {
 
 
         // for login
-        @PostMapping("/auth/login")
+        @PostMapping("/login")
         public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
+            System.out.println("✅ Login endpoint hit!");
+            String email = loginRequest.getEmail();
+            String rawPassword = loginRequest.getPassword();
 
-            String login = loginRequest.getLogin();
-            String password = loginRequest.getPassword();
-
-            Optional<User> userOpt = login.contains("@")
-                    ? userRepository.findByEmail(login)
-                    : userRepository.findByPhone(login);
-
+            Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
 
             // Check user exists
-            if (userOpt.isEmpty()) {
-                return ResponseEntity.status(401).body("User not found");
+            if (userOptional.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("❌ 用户未找到！");
             }
-
-            User user = userOpt.get();
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-            // Check password
-            if (!passwordEncoder.matches(password, user.getPassword())) {
-                System.out.println("Password mismatch!");
-                return ResponseEntity.status(401).body("Invalid password");
+            User user = userOptional.get();
+            // Check user password
+            if (user.getPassword() == null) {
+                System.out.println("⚠️ 数据库中密码为 null！");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("用户密码为空！");
             }
-
+            if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
+            }
+            System.out.println("用户信息：" + user);
+            System.out.println("用户邮箱：" + loginRequest.getEmail());
             //  Store users in session so it's accessible later
             session.setAttribute("user", user);
 
             // Login success
-            return ResponseEntity.ok(Map.of(
-                    "message", "Login successful",
-                    "role", user.getRole()
-            ));
-
+            return ResponseEntity.ok(user);
 
         }
 
@@ -105,7 +105,7 @@ public class UserController {
         @PostMapping("/session-check")
         @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
         public ResponseEntity<?> checkSession(@RequestBody LoginRequest loginRequest, HttpSession session) {
-            User user = userService.authenticate(loginRequest.getLogin(), loginRequest.getPassword());
+            User user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
 
             if (user != null) {
                 session.setAttribute("user", user); // ✅ Store user in session
@@ -114,29 +114,27 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
             }
         }
-        @GetMapping("/session-check")
-        public ResponseEntity<?> checkSession(HttpSession session, HttpServletRequest request) {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            System.out.println("🔍 Session check — user: " + auth);
-
-            Object user = session.getAttribute("user");
-            User loggedInUser = (User) user;
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(
-
-                            loggedInUser,
-                            null,
-                            List.of(new SimpleGrantedAuthority("ROLE_" + loggedInUser.getRole().toUpperCase()))
-                    );
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-            request.getSession().setAttribute(
-                    HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                    SecurityContextHolder.getContext());
-            if (user == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
-            }
-            return ResponseEntity.ok(user);
+    @GetMapping("/session-check")
+    public ResponseEntity<?> checkSession(HttpSession session, HttpServletRequest request) {
+        Object user = session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
         }
+
+        User loggedInUser = (User) user;
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(
+                        loggedInUser,
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_" + loggedInUser.getRole().toUpperCase()))
+                );
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+        request.getSession().setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                SecurityContextHolder.getContext());
+
+        return ResponseEntity.ok(loggedInUser);
+    }
 
         // for logout
         @PostMapping("/logout")
