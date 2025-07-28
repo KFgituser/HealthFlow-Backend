@@ -73,7 +73,7 @@ public class UserController {
 
     @GetMapping("/debug")
     public ResponseEntity<String> debugUser() {
-        userService.debugRawQueryByEmail("eric.hao@example.com");
+        userService.debugRawQueryByEmail("hkf1239948@163.com");
         return ResponseEntity.ok("Debug complete. Check console output.");
     }
 
