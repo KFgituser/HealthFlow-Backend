@@ -29,7 +29,7 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController     //Tells Spring: "This class is a REST controller."
 @RequestMapping("/api/users")       //Sets a base URL for all the endpoints in this controller.
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")    // allow React frontend
+@CrossOrigin(origins = "https://healthflow-frontend-sl57.onrender.com", allowCredentials = "true")    // allow React frontend
 
 public class UserController {
     //the logic for handling user-related requests.
@@ -103,7 +103,7 @@ public class UserController {
 
         // keep logged in
         @PostMapping("/session-check")
-        @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+        @CrossOrigin(origins = "https://healthflow-frontend-sl57.onrender.com", allowCredentials = "true")
         public ResponseEntity<?> checkSession(@RequestBody LoginRequest loginRequest, HttpSession session) {
             User user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
 
