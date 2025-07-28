@@ -1,9 +1,9 @@
 package com.healthflow.healthflowbackend.repository;
 
 import com.healthflow.healthflowbackend.model.Appointment;
-import com.healthflow.healthflowbackend.model.User;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 

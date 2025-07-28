@@ -1,10 +1,10 @@
 package com.healthflow.healthflowbackend.services;
 
 import com.healthflow.healthflowbackend.model.Appointment;
-import com.healthflow.healthflowbackend.model.User;
+
 import com.healthflow.healthflowbackend.repository.AppointmentRepository;
 import com.healthflow.healthflowbackend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -27,7 +27,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/appointments")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://healthflow-frontend-sl57.onrender.com")
 public class AppointmentController {
 
     @Autowired
