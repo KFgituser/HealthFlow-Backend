@@ -12,13 +12,10 @@ public class HealthflowBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(HealthflowBackendApplication.class, args);
 
-     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-
-
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         String hashed = encoder.encode("123456");
-        System.out.println("✅ 正确哈希是：" + hashed);
+        System.out.println("✅ 密码123456的哈希是：" + hashed);
     }
 
 }

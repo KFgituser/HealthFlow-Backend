@@ -15,7 +15,7 @@ public class CorsConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(
                                 "http://localhost:3000",    //locally react address
-                                "https://healthflow-frontend-sl57.onrender.com" //deployment
+                                "https://venerable-cannoli-933d82.netlify.app" //deployment
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
