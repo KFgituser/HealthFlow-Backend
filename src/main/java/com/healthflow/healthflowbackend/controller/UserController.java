@@ -54,28 +54,22 @@ public class UserController {
         return userService.getAllUsers().toString();
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
-        if (user.getRole() == null || (!user.getRole().equalsIgnoreCase("doctor") && !user.getRole().equalsIgnoreCase("patient"))) {
-            return ResponseEntity.badRequest().body("Invalid role");
+        //register
+        @PostMapping("/register")
+        public ResponseEntity<?> registerUser(@RequestBody User user) {
+            if (user.getRole() == null || (!user.getRole().equalsIgnoreCase("doctor") && !user.getRole().equalsIgnoreCase("patient"))) {
+                return ResponseEntity.badRequest().body("Invalid role");
+            }
+
+            try {
+                User savedUser = userService.registerUser(user);
+                return ResponseEntity.ok(savedUser);
+            } catch (RuntimeException e) {
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
         }
 
-        try {
-            User savedUser = userService.registerUser(user);
-            return ResponseEntity.ok(savedUser);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
-        //原始 JDBC 调试方法
-
-
-    @GetMapping("/debug")
-    public ResponseEntity<String> debugUser() {
-        userService.debugRawQueryByEmail("hkf1239948@163.com");
-        return ResponseEntity.ok("Debug complete. Check console output.");
-    }
 
         // for login
         @PostMapping("/login")
@@ -109,6 +103,7 @@ public class UserController {
 
         }
 
+
         // keep logged in
         @PostMapping("/session-check")
         @CrossOrigin(origins = "https://healthflow-frontend-sl57.onrender.com", allowCredentials = "true")
@@ -122,6 +117,7 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
             }
         }
+
     @GetMapping("/session-check")
     public ResponseEntity<?> checkSession(HttpSession session, HttpServletRequest request) {
         Object user = session.getAttribute("user");
@@ -144,7 +140,8 @@ public class UserController {
         return ResponseEntity.ok(loggedInUser);
     }
 
-        // for logout
+
+    // for logout
         @PostMapping("/logout")
         public ResponseEntity<String> logout(HttpServletRequest request) {
             request.getSession().invalidate(); // Invalidate the session

@@ -9,15 +9,11 @@ import com.healthflow.healthflowbackend.repository.UserRepository;
 import com.healthflow.healthflowbackend.services.AppointmentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import java.util.stream.Collectors;
@@ -37,38 +33,43 @@ public class AppointmentController {
     private UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<Appointment> createAppointment(@RequestBody AppointmentRequest dto) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("🔧 Logged in user: " + auth.getName());
+    public ResponseEntity<?> createAppointment(@RequestBody AppointmentRequest request) {
 
-        // 查找医生和病人
-        User doctor = userRepository.findById(dto.getDoctorId())
-                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+        try {
+            // ✅ 兼容前端 dummy doctor 的写法
+            User doctor = userRepository.findById(request.getDoctorId()).orElse(null);
+            if (doctor == null) {
+                doctor = new User();
+                doctor.setId(request.getDoctorId());
+                doctor.setFirstName("Dummy");
+                doctor.setLastName("Doctor");
+                doctor.setRole("DOCTOR");
+                System.out.println("⚠️ Using dummy doctor (id: " + doctor.getId() + ")");
+            }
 
-        User patient = userRepository.findById(dto.getPatientId())
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
+            // ✅ patient 必须是数据库中的真实用户
+            User patient = userRepository.findById(request.getPatientId())
+                    .orElseThrow(() -> new RuntimeException("Patient not found"));
 
-        // 日期/时间处理
-        LocalDate localDate = LocalDate.parse(dto.getAppointmentDate());
-        LocalTime startLocal = LocalTime.parse(dto.getStartTime());
-        LocalTime endLocal = LocalTime.parse(dto.getEndTime());
+            Appointment appointment = new Appointment();
+            appointment.setDoctor(doctor);
+            appointment.setPatient(patient);
+            // String → java.sql.Date
+            appointment.setAppointmentDate(java.sql.Date.valueOf(request.getAppointmentDate()));
 
-        //  SQL
-        Date appointmentDate = Date.valueOf(localDate);
-        Time startTime = Time.valueOf(startLocal);
-        Time endTime = Time.valueOf(endLocal);
+            // String → java.sql.Time
+            appointment.setStartTime(java.sql.Time.valueOf(request.getStartTime() + ":00"));
+            appointment.setEndTime(java.sql.Time.valueOf(request.getEndTime() + ":00"));
+            appointment.setStatus(request.getStatus());
 
-        // 构建预约对象
-        Appointment appointment = new Appointment();
-        appointment.setDoctor(doctor);
-        appointment.setPatient(patient);
-        appointment.setAppointmentDate(appointmentDate);
-        appointment.setStartTime(startTime);
-        appointment.setEndTime(endTime);
-        appointment.setStatus(dto.getStatus());
+            appointmentRepository.save(appointment);
+            return ResponseEntity.ok("Appointment booked successfully)");
 
-        Appointment saved = appointmentService.createAppointment(appointment);
-        return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to book appointment: " + e.getMessage());
+        }
     }
 
     @Autowired
