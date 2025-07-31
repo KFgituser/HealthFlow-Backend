@@ -14,7 +14,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins(
-
+                                "https://venerable-cannoli-933d82.netlify.app/",
                                 "https://healthflow-backend-3l0y.onrender.com" //deployment
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")

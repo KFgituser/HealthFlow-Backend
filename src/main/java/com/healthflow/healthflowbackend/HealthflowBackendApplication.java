@@ -16,6 +16,7 @@ public class HealthflowBackendApplication {
 
         String hashed = encoder.encode("123456");
         System.out.println("✅ 密码123456的哈希是：" + hashed);
+
     }
 
 }
