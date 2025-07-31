@@ -29,7 +29,7 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController     //Tells Spring: "This class is a REST controller."
 @RequestMapping("/api/users")       //Sets a base URL for all the endpoints in this controller.
-@CrossOrigin(origins =  "https://venerable-cannoli-933d82.netlify.app", allowCredentials = "true")    // allow React frontend
+@CrossOrigin(origins = "https://venerable-cannoli-933d82.netlify.app", allowCredentials = "true")    // allow React frontend
 
 public class UserController {
     //the logic for handling user-related requests.
@@ -119,6 +119,7 @@ public class UserController {
         }
 
     @GetMapping("/session-check")
+    @CrossOrigin(origins =  "https://venerable-cannoli-933d82.netlify.app", allowCredentials = "true")
     public ResponseEntity<?> checkSession(HttpSession session, HttpServletRequest request) {
         Object user = session.getAttribute("user");
         if (user == null) {
