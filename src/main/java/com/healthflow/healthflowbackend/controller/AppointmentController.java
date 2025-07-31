@@ -9,11 +9,13 @@ import com.healthflow.healthflowbackend.repository.UserRepository;
 import com.healthflow.healthflowbackend.services.AppointmentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import java.util.stream.Collectors;
@@ -107,4 +109,26 @@ public class AppointmentController {
         appointmentRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
+
+
+
+    @GetMapping("/doctor/{doctorId}")
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentsByDoctor(
+            @PathVariable Long doctorId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+
+        List<Appointment> appointments;
+        if (date != null) {
+            appointments = appointmentRepository.findByDoctorIdAndAppointmentDate(doctorId, date);
+        } else {
+            appointments = appointmentRepository.findByDoctorId(doctorId);
+        }
+
+        List<AppointmentResponse> responseList = appointments.stream()
+                .map(AppointmentResponse::fromEntity)
+                .toList();
+
+        return ResponseEntity.ok(responseList);
+    }
+
 }
