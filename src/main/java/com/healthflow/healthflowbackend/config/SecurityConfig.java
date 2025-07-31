@@ -46,8 +46,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-                "http://localhost:3000",    //locally react address
-                "https://healthflow-frontend-sl57.onrender.com" //deployment
+
+                "https://healthflow-backend-3l0y.onrender.com" //deployment
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));

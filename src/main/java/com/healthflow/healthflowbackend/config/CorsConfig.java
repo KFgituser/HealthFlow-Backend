@@ -14,8 +14,8 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins(
-                                "http://localhost:3000",    //locally react address
-                                "https://healthflow-frontend-sl57.onrender.com" //deployment
+
+                                "https://healthflow-backend-3l0y.onrender.com" //deployment
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")

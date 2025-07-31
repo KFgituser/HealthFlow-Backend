@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/doctor-availability")
-@CrossOrigin(origins = "https://healthflow-frontend-sl57.onrender.com")    // allow React frontend
+@CrossOrigin(origins = "https://healthflow-backend-3l0y.onrender.com")    // allow React frontend
 public class DoctorAvailabilityController {
 
     private final DoctorAvailabilityService service;
