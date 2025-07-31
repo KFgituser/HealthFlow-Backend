@@ -25,7 +25,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/appointments")
-@CrossOrigin(origins = "https://healthflow-backend-3l0y.onrender.com")
+@CrossOrigin(origins =  "https://venerable-cannoli-933d82.netlify.app/")
 public class AppointmentController {
 
     @Autowired
