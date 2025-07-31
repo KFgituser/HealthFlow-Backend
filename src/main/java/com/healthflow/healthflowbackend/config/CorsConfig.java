@@ -17,7 +17,7 @@ public class CorsConfig {
 
                                 "https://healthflow-backend-3l0y.onrender.com" //deployment
                         )
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }
