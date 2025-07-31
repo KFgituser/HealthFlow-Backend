@@ -106,7 +106,7 @@ public class UserController {
 
         // keep logged in
         @PostMapping("/session-check")
-        @CrossOrigin(origins = "https://healthflow-backend-3l0y.onrender.com", allowCredentials = "true")
+        @CrossOrigin(origins = "https://healthflow-frontend-sl57.onrender.com", allowCredentials = "true")
         public ResponseEntity<?> checkSession(@RequestBody LoginRequest loginRequest, HttpSession session) {
             User user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
 
