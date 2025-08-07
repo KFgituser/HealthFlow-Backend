@@ -49,7 +49,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-                "https://venerable-cannoli-933d82.netlify.app" //deployment
+                "https://venerable-cannoli-933d82.netlify.app", //deployment
+                "http://127.0.0.1",
+                "http://jmeter" // evaluation
+
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
