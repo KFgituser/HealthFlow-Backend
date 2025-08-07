@@ -6,8 +6,9 @@ services:
     region: frankfurt
     envVars:
       - key: SPRING_DATASOURCE_URL
-        value: jdbc:mysql://mainline.proxy.rlwy.net:55062/railway
+        value: jdbc:mysql://shinkansen.proxy.rlwy.net:47668/healthflow
+
       - key: SPRING_DATASOURCE_USERNAME
         value: root
       - key: SPRING_DATASOURCE_PASSWORD
-        value: tMkhNQzLyUsEfkOmLkhgCvcsNkfCjDoe
+        value: DDIcqxathogDCuVJHSTRGVZqRYQWqlWm

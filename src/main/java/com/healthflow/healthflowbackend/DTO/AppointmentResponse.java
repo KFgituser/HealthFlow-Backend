@@ -26,11 +26,11 @@ public class AppointmentResponse {
     public static AppointmentResponse fromEntity(Appointment appt) {
         AppointmentResponse dto = new AppointmentResponse();
         dto.appointmentId = appt.getAppointmentId();
-        dto.doctorId = appt.getDoctor().getId();  // 确保 Appointment 有 doctor 字段
-        dto.doctorName = appt.getDoctor().getFullName(); // 确保 doctor 是 User 类型
-        dto.appointmentDate = appt.getAppointmentDate().toLocalDate(); // 类型为 LocalDate
-        dto.startTime = appt.getStartTime().toLocalTime();             // 类型为 LocalTime
-        dto.endTime = appt.getEndTime().toLocalTime();                 // 类型为 LocalTime
+        dto.doctorId = appt.getDoctor().getId();  //
+        dto.doctorName = appt.getDoctor().getFullName(); //
+        dto.appointmentDate = appt.getAppointmentDate().toLocalDate();
+        dto.startTime = appt.getStartTime().toLocalTime();
+        dto.endTime = appt.getEndTime().toLocalTime();
         dto.status = appt.getStatus();
         return dto;
     }

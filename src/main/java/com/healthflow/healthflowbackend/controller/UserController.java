@@ -118,28 +118,28 @@ public class UserController {
             }
         }
 
-    @GetMapping("/session-check")
-    @CrossOrigin(origins =  "https://venerable-cannoli-933d82.netlify.app", allowCredentials = "true")
-    public ResponseEntity<?> checkSession(HttpSession session, HttpServletRequest request) {
-        Object user = session.getAttribute("user");
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+        @GetMapping("/session-check")
+        @CrossOrigin(origins =  "https://venerable-cannoli-933d82.netlify.app", allowCredentials = "true")
+        public ResponseEntity<?> checkSession(HttpSession session, HttpServletRequest request) {
+            Object user = session.getAttribute("user");
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+            }
+
+            User loggedInUser = (User) user;
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(
+                            loggedInUser,
+                            null,
+                            List.of(new SimpleGrantedAuthority("ROLE_" + loggedInUser.getRole().toUpperCase()))
+                    );
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+            request.getSession().setAttribute(
+                    HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                    SecurityContextHolder.getContext());
+
+            return ResponseEntity.ok(loggedInUser);
         }
-
-        User loggedInUser = (User) user;
-        UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(
-                        loggedInUser,
-                        null,
-                        List.of(new SimpleGrantedAuthority("ROLE_" + loggedInUser.getRole().toUpperCase()))
-                );
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-        request.getSession().setAttribute(
-                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                SecurityContextHolder.getContext());
-
-        return ResponseEntity.ok(loggedInUser);
-    }
 
 
     // for logout
