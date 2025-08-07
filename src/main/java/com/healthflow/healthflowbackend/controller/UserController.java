@@ -74,7 +74,7 @@ public class UserController {
         // for login
         @PostMapping("/login")
         public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
-            System.out.println("✅ Login endpoint hit!");
+            System.out.println("🔵 Reached /login endpoint from JMeter");
             String email = loginRequest.getEmail();
             String rawPassword = loginRequest.getPassword();
 
