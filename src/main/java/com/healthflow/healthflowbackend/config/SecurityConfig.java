@@ -17,47 +17,47 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
-@Configuration
-@EnableWebSecurity
+@Configuration  // Marks this class as a configuration class for Spring
+@EnableWebSecurity  // Enables Spring Security for the application
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS
-                .csrf(csrf -> csrf.disable())
+        http     // Enable CORS with custom configuration
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())   // Disable CSRF protection
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/login",
-                                "/api/users/login",
-                                "/api/users/register",
-                                "/api/auth/**",
+                                "/api/users/login",     //login
+                                "/api/users/register",  //register
+                                "/api/auth/**",          // Auth-related endpoints
                                 "/api/users/session-check" // session
                         ).permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow all OPTIONS requests
+                        .anyRequest().authenticated()    // Require authentication for all other requests
                 );
 
         return http.build();
     }
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(); // Use BCrypt for password hashing
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
+        // Allowed origins
         config.setAllowedOrigins(List.of(
-                "https://venerable-cannoli-933d82.netlify.app", //deployment
-                "http://127.0.0.1",
-                "http://jmeter" // evaluation
+                "https://venerable-cannoli-933d82.netlify.app" //deployment
 
         ));
+        // Allowed HTTP methods
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true);
+        config.setAllowedHeaders(List.of("*"));   // Allow all headers in requests
+        config.setAllowCredentials(true); // Allow credentials (cookies, authorization headers)
 
+        // Register the CORS configuration for all API paths
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;

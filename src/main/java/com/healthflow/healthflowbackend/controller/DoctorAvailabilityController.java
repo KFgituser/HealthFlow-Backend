@@ -12,21 +12,24 @@ import java.util.List;
 public class DoctorAvailabilityController {
 
     private final DoctorAvailabilityService service;
-
+    // Constructor injection for the service
     public DoctorAvailabilityController(DoctorAvailabilityService service) {
         this.service = service;
     }
 
+    // GET: Retrieve all doctor availability records
     @GetMapping
     public List<DoctorAvailability> getAll() {
         return service.findAll();
     }
 
+    // POST: Create a new doctor availability entry
     @PostMapping
     public DoctorAvailability create(@RequestBody DoctorAvailability availability) {
         return service.save(availability);
     }
 
+    // DELETE: Remove a doctor availability record by ID
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.delete(id);

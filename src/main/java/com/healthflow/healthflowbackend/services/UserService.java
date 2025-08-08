@@ -23,11 +23,11 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-
+    // Constructor injection without password encoder
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
+    // Constructor injection with password encoder
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -40,19 +40,18 @@ public class UserService {
         user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
-
+    // Get all users from DataBase
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-
-
-
+    // Authenticate user by login and password
     public User authenticate(String login, String password) {
         Optional<User> optionalUser = userRepository.findByEmail(login);
+        // If not found, search again
         if (optionalUser.isEmpty()) {
             optionalUser = userRepository.findByEmail(login);
         }
-
+        // If found, verify password
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             if (passwordEncoder.matches(password, user.getPassword())) {
@@ -60,17 +59,15 @@ public class UserService {
             }
         }
 
-
         return null; // Invalid login
     }
-    //原始 JDBC 调试方法
+    // JDBC Debug
     @Autowired
     private DataSource dataSource;
     public void debugRawQueryByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
 

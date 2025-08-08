@@ -82,19 +82,18 @@ public class UserController {
 
             // Check user exists
             if (userOptional.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("❌ 用户未找到！");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("❌ user not found！");
             }
             User user = userOptional.get();
             // Check user password
             if (user.getPassword() == null) {
-                System.out.println("⚠️ 数据库中密码为 null！");
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("用户密码为空！");
+                System.out.println("⚠️ password in database is null！");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("no password ！");
             }
             if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
             }
-            System.out.println("用户信息：" + user);
-            System.out.println("用户邮箱：" + loginRequest.getEmail());
+
             //  Store users in session so it's accessible later
             session.setAttribute("user", user);
 
@@ -111,7 +110,7 @@ public class UserController {
             User user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
 
             if (user != null) {
-                session.setAttribute("user", user); // ✅ Store user in session
+                session.setAttribute("user", user); //  Store user in session
                 return ResponseEntity.ok(user);     // Return user info
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
@@ -121,19 +120,25 @@ public class UserController {
         @GetMapping("/session-check")
         @CrossOrigin(origins =  "https://venerable-cannoli-933d82.netlify.app", allowCredentials = "true")
         public ResponseEntity<?> checkSession(HttpSession session, HttpServletRequest request) {
+            //  Retrieve the 'user' attribute from the current HTTP session
             Object user = session.getAttribute("user");
+            // If no user is stored in the session, return 401 Unauthorized
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
             }
-
+            // Cast the session object to a User entity
             User loggedInUser = (User) user;
+            // Create an authentication token for Spring Security
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
                             loggedInUser,
-                            null,
+                            null,   // No password needed here
                             List.of(new SimpleGrantedAuthority("ROLE_" + loggedInUser.getRole().toUpperCase()))
                     );
+
+            // Store authentication in the Spring Security context
             SecurityContextHolder.getContext().setAuthentication(authToken);
+            // Save the security context in the HTTP session
             request.getSession().setAttribute(
                     HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                     SecurityContextHolder.getContext());

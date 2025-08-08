@@ -23,9 +23,10 @@ public class DoctorController {
     @GetMapping("/doctors")
     public ResponseEntity<List<DoctorResponse>> getAllDoctors() {
         try {
+            //  Fetch all users whose role is "doctor"
             List<User> doctors = userRepository.findByRole("doctor");
             System.out.println("Doctors: " + doctors);
-
+            //  Map User entities to lightweight DTOs for the frontend
             List<DoctorResponse> response = doctors.stream()
                     .map(user -> new DoctorResponse(
                             user.getId(),

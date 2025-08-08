@@ -21,11 +21,12 @@ public class AppointmentService {
         this.appointmentRepository = appointmentRepository;
         this.userRepository = userRepository;
     }
+    // Retrieve appointments for a specific patient by userId
     public List<Appointment> getAppointmentsByPatientId(Long userId) {
         return appointmentRepository.findByPatient_Id(userId);
 
     }
-
+    // Create a new appointment entry
     public Appointment createAppointment(Appointment appointment) {
         return appointmentRepository.save(appointment);
     }
@@ -43,5 +44,5 @@ public class AppointmentService {
     }
 
 
-    // add more methods
+
 }

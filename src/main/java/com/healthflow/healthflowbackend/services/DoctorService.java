@@ -13,11 +13,11 @@ public class DoctorService {
 
     @Autowired
     private UserRepository userRepository;
-
+    // Fetch all users with the role "DOCTOR" and convert them into DTOs
     public List<DoctorResponse> getAllDoctors() {
         return userRepository.findByRole("DOCTOR").stream()
                 .map(user -> new DoctorResponse(
-                        user.getId(),
+                        user.getId(),   // Doctor ID
                         user.getFirstName(),
                         user.getLastName(),
                         user.getSpecialty()
