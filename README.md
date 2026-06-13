@@ -1,4 +1,2 @@
-Backend using Spring Boot
 
-
-NCI Final Project
+## NCI Final Project
